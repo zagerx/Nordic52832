@@ -2,15 +2,26 @@ PROJECT_NAME     := ble_app_hrs_pca10040_s132
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
+PREFIX = arm-none-eabi-
+CC = $(PREFIX)gcc
+AS = $(PREFIX)gcc -x assembler-with-cpp
+CP = $(PREFIX)objcopy
+SZ = $(PREFIX)size
+HEX = $(CP) -O ihex
+BIN = $(CP) -O binary -S
+
+
 SDK_ROOT := ../../../../../..
 PROJ_DIR := ../../..
 
-$(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
-  LINKER_SCRIPT  := ble_app_hrs_gcc_nrf52.ld
+#$(OUTPUT_DIRECTORY)/nrf52832_xxaa.out : 
 
+
+LINKER_SCRIPT := ble_app_hrs_gcc_nrf52.ld
+
+S_SOURCES = $(SDK_ROOT)/modules/nrfx/mdk/gcc_startup_nrf52.S 
 # Source files common to all targets
 SRC_FILES += \
-  $(SDK_ROOT)/modules/nrfx/mdk/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/libraries/bsp/bsp.c \
   $(SDK_ROOT)/components/libraries/bsp/bsp_btn_ble.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw/nrf_hw_backend_init.c \
@@ -121,151 +132,151 @@ SRC_FILES += \
 
 # Include folders common to all targets
 INC_FOLDERS += \
-  $(SDK_ROOT)/components/nfc/ndef/generic/message \
-  $(SDK_ROOT)/components/nfc/t2t_lib \
-  $(SDK_ROOT)/components/nfc/t4t_parser/hl_detection_procedure \
-  $(SDK_ROOT)/components/ble/ble_services/ble_ancs_c \
-  $(SDK_ROOT)/components/ble/ble_services/ble_ias_c \
-  $(SDK_ROOT)/components/libraries/pwm \
-  $(SDK_ROOT)/components/softdevice/s132/headers/nrf52 \
-  $(SDK_ROOT)/external/nrf_oberon/include \
-  $(SDK_ROOT)/components/libraries/usbd/class/cdc/acm \
-  $(SDK_ROOT)/components/libraries/usbd/class/hid/generic \
-  $(SDK_ROOT)/components/libraries/usbd/class/msc \
-  $(SDK_ROOT)/components/libraries/usbd/class/hid \
-  $(SDK_ROOT)/modules/nrfx/hal \
-  $(SDK_ROOT)/components/nfc/ndef/conn_hand_parser/le_oob_rec_parser \
-  $(SDK_ROOT)/components/libraries/log \
-  $(SDK_ROOT)/components/ble/ble_services/ble_gls \
-  $(SDK_ROOT)/components/libraries/fstorage \
-  $(SDK_ROOT)/components/nfc/ndef/text \
-  $(SDK_ROOT)/components/libraries/mutex \
-  $(SDK_ROOT)/components/libraries/gpiote \
-  $(SDK_ROOT)/components/libraries/bootloader/ble_dfu \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/common \
-  $(SDK_ROOT)/components/boards \
-  $(SDK_ROOT)/components/nfc/ndef/generic/record \
-  $(SDK_ROOT)/components/nfc/t4t_parser/cc_file \
-  $(SDK_ROOT)/components/ble/ble_advertising \
-  $(SDK_ROOT)/external/utf_converter \
-  $(SDK_ROOT)/components/ble/ble_services/ble_bas_c \
-  $(SDK_ROOT)/components/libraries/crypto/backend/micro_ecc \
-  $(SDK_ROOT)/modules/nrfx/drivers/include \
-  $(SDK_ROOT)/components/libraries/experimental_task_manager \
-  $(SDK_ROOT)/components/ble/ble_services/ble_hrs_c \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/le_oob_rec \
-  $(SDK_ROOT)/components/libraries/crypto/backend/oberon \
-  $(SDK_ROOT)/components/libraries/queue \
-  $(SDK_ROOT)/components/libraries/pwr_mgmt \
-  $(SDK_ROOT)/components/ble/ble_dtm \
-  $(SDK_ROOT)/components/toolchain/cmsis/include \
-  $(SDK_ROOT)/components/ble/ble_services/ble_rscs_c \
-  $(SDK_ROOT)/components/ble/common \
-  $(SDK_ROOT)/components/ble/ble_services/ble_lls \
-  $(SDK_ROOT)/components/nfc/platform \
-  $(SDK_ROOT)/components/libraries/bsp \
-  $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/ac_rec \
-  $(SDK_ROOT)/components/ble/ble_services/ble_bas \
-  $(SDK_ROOT)/components/libraries/mpu \
-  $(SDK_ROOT)/components/libraries/experimental_section_vars \
-  $(SDK_ROOT)/components/softdevice/s132/headers \
-  $(SDK_ROOT)/components/ble/ble_services/ble_ans_c \
-  $(SDK_ROOT)/components/libraries/slip \
-  $(SDK_ROOT)/components/libraries/delay \
-  $(SDK_ROOT)/components/libraries/usbd/class/cdc \
-  $(SDK_ROOT)/components/libraries/memobj \
-  $(SDK_ROOT)/components/libraries/crypto/backend/cc310_bl \
-  $(SDK_ROOT)/components/ble/ble_services/ble_nus_c \
-  $(SDK_ROOT)/components/softdevice/common \
-  $(SDK_ROOT)/components/ble/ble_services/ble_ias \
-  $(SDK_ROOT)/components/libraries/usbd/class/hid/mouse \
-  $(SDK_ROOT)/components/libraries/low_power_pwm \
-  $(SDK_ROOT)/components/nfc/ndef/conn_hand_parser/ble_oob_advdata_parser \
-  $(SDK_ROOT)/components/ble/ble_services/ble_dfu \
-  $(SDK_ROOT)/external/fprintf \
-  $(SDK_ROOT)/components/libraries/svc \
-  $(SDK_ROOT)/components/libraries/atomic \
-  $(SDK_ROOT)/components \
-  $(SDK_ROOT)/external/nrf_cc310/include \
-  $(SDK_ROOT)/components/libraries/scheduler \
-  $(SDK_ROOT)/components/libraries/cli \
-  $(SDK_ROOT)/components/ble/ble_services/ble_lbs \
-  $(SDK_ROOT)/components/ble/ble_services/ble_hts \
-  $(SDK_ROOT)/components/libraries/crc16 \
-  $(SDK_ROOT)/components/nfc/t4t_parser/apdu \
-  $(SDK_ROOT)/components/libraries/util \
-  ../config \
-  $(SDK_ROOT)/components/libraries/csense_drv \
-  $(SDK_ROOT)/components/libraries/csense \
-  $(SDK_ROOT)/components/libraries/balloc \
-  $(SDK_ROOT)/components/libraries/ecc \
-  $(SDK_ROOT)/components/libraries/hardfault \
-  $(SDK_ROOT)/components/ble/ble_services/ble_cscs \
-  $(SDK_ROOT)/components/libraries/hci \
-  $(SDK_ROOT)/components/libraries/usbd/class/hid/kbd \
-  $(SDK_ROOT)/components/libraries/timer \
-  $(SDK_ROOT)/integration/nrfx \
-  $(SDK_ROOT)/components/libraries/stack_info \
-  $(SDK_ROOT)/components/nfc/t4t_parser/tlv \
-  $(SDK_ROOT)/components/libraries/sortlist \
-  $(SDK_ROOT)/components/libraries/spi_mngr \
-  $(SDK_ROOT)/components/libraries/led_softblink \
-  $(SDK_ROOT)/components/nfc/ndef/conn_hand_parser \
-  $(SDK_ROOT)/components/libraries/sdcard \
-  $(SDK_ROOT)/components/nfc/t4t_lib \
-  $(SDK_ROOT)/components/nfc/ndef/parser/record \
-  $(SDK_ROOT)/modules/nrfx/mdk \
-  $(SDK_ROOT)/components/ble/ble_services/ble_cts_c \
-  $(SDK_ROOT)/external/nrf_tls/mbedtls/nrf_crypto/config \
-  $(SDK_ROOT)/components/ble/ble_services/ble_nus \
-  $(SDK_ROOT)/components/libraries/twi_mngr \
-  $(SDK_ROOT)/components/ble/ble_services/ble_hids \
-  $(SDK_ROOT)/components/libraries/strerror \
-  $(SDK_ROOT)/components/libraries/crc32 \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/ble_oob_advdata \
-  $(SDK_ROOT)/components/nfc/t2t_parser \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/ble_pair_msg \
-  $(SDK_ROOT)/components/libraries/crypto/backend/optiga \
-  $(SDK_ROOT)/components/libraries/usbd/class/audio \
-  $(SDK_ROOT)/components/libraries/sensorsim \
-  $(SDK_ROOT)/components/libraries/crypto/backend/nrf_sw \
-  $(SDK_ROOT)/components/ble/peer_manager \
-  $(SDK_ROOT)/components/libraries/mem_manager \
-  $(SDK_ROOT)/components/libraries/ringbuf \
-  $(SDK_ROOT)/components/ble/ble_services/ble_tps \
-  $(SDK_ROOT)/components/ble/ble_services/ble_rscs \
-  $(SDK_ROOT)/components/nfc/ndef/parser/message \
-  $(SDK_ROOT)/components/libraries/crypto/backend/mbedtls \
-  $(SDK_ROOT)/components/libraries/crypto/backend/cc310 \
-  $(SDK_ROOT)/external/nrf_oberon \
-  $(SDK_ROOT)/components/ble/ble_services/ble_dis \
-  $(SDK_ROOT)/components/nfc/ndef/uri \
-  $(SDK_ROOT)/components/ble/nrf_ble_gatt \
-  $(SDK_ROOT)/components/ble/nrf_ble_qwr \
-  $(SDK_ROOT)/components/libraries/gfx \
-  $(SDK_ROOT)/components/libraries/button \
-  $(SDK_ROOT)/modules/nrfx \
-  $(SDK_ROOT)/components/libraries/twi_sensor \
-  $(SDK_ROOT)/integration/nrfx/legacy \
-  $(SDK_ROOT)/components/libraries/usbd \
-  $(SDK_ROOT)/external/mbedtls/include \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/ep_oob_rec \
-  $(SDK_ROOT)/external/segger_rtt \
-  $(SDK_ROOT)/components/libraries/atomic_fifo \
-  $(SDK_ROOT)/components/ble/ble_services/ble_lbs_c \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/ble_pair_lib \
-  $(SDK_ROOT)/components/libraries/crypto \
-  $(SDK_ROOT)/components/ble/ble_racp \
-  $(SDK_ROOT)/components/libraries/fds \
-  $(SDK_ROOT)/components/nfc/ndef/launchapp \
-  $(SDK_ROOT)/components/libraries/atomic_flags \
-  $(SDK_ROOT)/components/ble/ble_services/ble_hrs \
-  $(SDK_ROOT)/components/libraries/crypto/backend/cifra \
-  $(SDK_ROOT)/components/nfc/ndef/connection_handover/hs_rec \
-  $(SDK_ROOT)/components/nfc/ndef/conn_hand_parser/ac_rec_parser \
-  $(SDK_ROOT)/components/libraries/stack_guard \
-  $(SDK_ROOT)/components/libraries/log/src \
+  -I$(SDK_ROOT)/components/nfc/ndef/generic/message \
+  -I$(SDK_ROOT)/components/nfc/t2t_lib \
+  -I$(SDK_ROOT)/components/nfc/t4t_parser/hl_detection_procedure \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_ancs_c \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_ias_c \
+  -I$(SDK_ROOT)/components/libraries/pwm \
+  -I$(SDK_ROOT)/components/softdevice/s132/headers/nrf52 \
+  -I$(SDK_ROOT)/external/nrf_oberon/include \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/cdc/acm \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/hid/generic \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/msc \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/hid \
+  -I$(SDK_ROOT)/modules/nrfx/hal \
+  -I$(SDK_ROOT)/components/nfc/ndef/conn_hand_parser/le_oob_rec_parser \
+  -I$(SDK_ROOT)/components/libraries/log \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_gls \
+  -I$(SDK_ROOT)/components/libraries/fstorage \
+  -I$(SDK_ROOT)/components/nfc/ndef/text \
+  -I$(SDK_ROOT)/components/libraries/mutex \
+  -I$(SDK_ROOT)/components/libraries/gpiote \
+  -I$(SDK_ROOT)/components/libraries/bootloader/ble_dfu \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/common \
+  -I$(SDK_ROOT)/components/boards \
+  -I$(SDK_ROOT)/components/nfc/ndef/generic/record \
+  -I$(SDK_ROOT)/components/nfc/t4t_parser/cc_file \
+  -I$(SDK_ROOT)/components/ble/ble_advertising \
+  -I$(SDK_ROOT)/external/utf_converter \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_bas_c \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/micro_ecc \
+  -I$(SDK_ROOT)/modules/nrfx/drivers/include \
+  -I$(SDK_ROOT)/components/libraries/experimental_task_manager \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_hrs_c \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/le_oob_rec \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/oberon \
+  -I$(SDK_ROOT)/components/libraries/queue \
+  -I$(SDK_ROOT)/components/libraries/pwr_mgmt \
+  -I$(SDK_ROOT)/components/ble/ble_dtm \
+  -I$(SDK_ROOT)/components/toolchain/cmsis/include \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_rscs_c \
+  -I$(SDK_ROOT)/components/ble/common \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_lls \
+  -I$(SDK_ROOT)/components/nfc/platform \
+  -I$(SDK_ROOT)/components/libraries/bsp \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/ac_rec \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_bas \
+  -I$(SDK_ROOT)/components/libraries/mpu \
+  -I$(SDK_ROOT)/components/libraries/experimental_section_vars \
+  -I$(SDK_ROOT)/components/softdevice/s132/headers \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_ans_c \
+  -I$(SDK_ROOT)/components/libraries/slip \
+  -I$(SDK_ROOT)/components/libraries/delay \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/cdc \
+  -I$(SDK_ROOT)/components/libraries/memobj \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/cc310_bl \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_nus_c \
+  -I$(SDK_ROOT)/components/softdevice/common \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_ias \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/hid/mouse \
+  -I$(SDK_ROOT)/components/libraries/low_power_pwm \
+  -I$(SDK_ROOT)/components/nfc/ndef/conn_hand_parser/ble_oob_advdata_parser \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_dfu \
+  -I$(SDK_ROOT)/external/fprintf \
+  -I$(SDK_ROOT)/components/libraries/svc \
+  -I$(SDK_ROOT)/components/libraries/atomic \
+  -I$(SDK_ROOT)/components \
+  -I$(SDK_ROOT)/external/nrf_cc310/include \
+  -I$(SDK_ROOT)/components/libraries/scheduler \
+  -I$(SDK_ROOT)/components/libraries/cli \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_lbs \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_hts \
+  -I$(SDK_ROOT)/components/libraries/crc16 \
+  -I$(SDK_ROOT)/components/nfc/t4t_parser/apdu \
+  -I$(SDK_ROOT)/components/libraries/util \
+  -I../config \
+  -I$(SDK_ROOT)/components/libraries/csense_drv \
+  -I$(SDK_ROOT)/components/libraries/csense \
+  -I$(SDK_ROOT)/components/libraries/balloc \
+  -I$(SDK_ROOT)/components/libraries/ecc \
+  -I$(SDK_ROOT)/components/libraries/hardfault \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_cscs \
+  -I$(SDK_ROOT)/components/libraries/hci \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/hid/kbd \
+  -I$(SDK_ROOT)/components/libraries/timer \
+  -I$(SDK_ROOT)/integration/nrfx \
+  -I$(SDK_ROOT)/components/libraries/stack_info \
+  -I$(SDK_ROOT)/components/nfc/t4t_parser/tlv \
+  -I$(SDK_ROOT)/components/libraries/sortlist \
+  -I$(SDK_ROOT)/components/libraries/spi_mngr \
+  -I$(SDK_ROOT)/components/libraries/led_softblink \
+  -I$(SDK_ROOT)/components/nfc/ndef/conn_hand_parser \
+  -I$(SDK_ROOT)/components/libraries/sdcard \
+  -I$(SDK_ROOT)/components/nfc/t4t_lib \
+  -I$(SDK_ROOT)/components/nfc/ndef/parser/record \
+  -I$(SDK_ROOT)/modules/nrfx/mdk \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_cts_c \
+  -I$(SDK_ROOT)/external/nrf_tls/mbedtls/nrf_crypto/config \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_nus \
+  -I$(SDK_ROOT)/components/libraries/twi_mngr \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_hids \
+  -I$(SDK_ROOT)/components/libraries/strerror \
+  -I$(SDK_ROOT)/components/libraries/crc32 \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/ble_oob_advdata \
+  -I$(SDK_ROOT)/components/nfc/t2t_parser \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/ble_pair_msg \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/optiga \
+  -I$(SDK_ROOT)/components/libraries/usbd/class/audio \
+  -I$(SDK_ROOT)/components/libraries/sensorsim \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/nrf_sw \
+  -I$(SDK_ROOT)/components/ble/peer_manager \
+  -I$(SDK_ROOT)/components/libraries/mem_manager \
+  -I$(SDK_ROOT)/components/libraries/ringbuf \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_tps \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_rscs \
+  -I$(SDK_ROOT)/components/nfc/ndef/parser/message \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/mbedtls \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/cc310 \
+  -I$(SDK_ROOT)/external/nrf_oberon \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_dis \
+  -I$(SDK_ROOT)/components/nfc/ndef/uri \
+  -I$(SDK_ROOT)/components/ble/nrf_ble_gatt \
+  -I$(SDK_ROOT)/components/ble/nrf_ble_qwr \
+  -I$(SDK_ROOT)/components/libraries/gfx \
+  -I$(SDK_ROOT)/components/libraries/button \
+  -I$(SDK_ROOT)/modules/nrfx \
+  -I$(SDK_ROOT)/components/libraries/twi_sensor \
+  -I$(SDK_ROOT)/integration/nrfx/legacy \
+  -I$(SDK_ROOT)/components/libraries/usbd \
+  -I$(SDK_ROOT)/external/mbedtls/include \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/ep_oob_rec \
+  -I$(SDK_ROOT)/external/segger_rtt \
+  -I$(SDK_ROOT)/components/libraries/atomic_fifo \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_lbs_c \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/ble_pair_lib \
+  -I$(SDK_ROOT)/components/libraries/crypto \
+  -I$(SDK_ROOT)/components/ble/ble_racp \
+  -I$(SDK_ROOT)/components/libraries/fds \
+  -I$(SDK_ROOT)/components/nfc/ndef/launchapp \
+  -I$(SDK_ROOT)/components/libraries/atomic_flags \
+  -I$(SDK_ROOT)/components/ble/ble_services/ble_hrs \
+  -I$(SDK_ROOT)/components/libraries/crypto/backend/cifra \
+  -I$(SDK_ROOT)/components/nfc/ndef/connection_handover/hs_rec \
+  -I$(SDK_ROOT)/components/nfc/ndef/conn_hand_parser/ac_rec_parser \
+  -I$(SDK_ROOT)/components/libraries/stack_guard \
+  -I$(SDK_ROOT)/components/libraries/log/src \
  
 # Libraries common to all targets
 LIB_FILES += \
@@ -300,7 +311,9 @@ CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in a separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
 CFLAGS += -fno-builtin -fshort-enums
+CFLAGS += $(INC_FOLDERS)
 
+# ASMFLAGS += $(INC_FOLDERS)
 # C++ flags common to all targets
 CXXFLAGS += $(OPT)
 # Assembler flags common to all targets
@@ -332,62 +345,104 @@ LDFLAGS += -Wl,--gc-sections
 # use newlib in nano version
 LDFLAGS += --specs=nano.specs
 
-nrf52832_xxaa: CFLAGS += -D__HEAP_SIZE=8192
-nrf52832_xxaa: CFLAGS += -D__STACK_SIZE=8192
-nrf52832_xxaa: ASMFLAGS += -D__HEAP_SIZE=8192
-nrf52832_xxaa: ASMFLAGS += -D__STACK_SIZE=8192
+# nrf52832_xxaa: CFLAGS += -D__HEAP_SIZE=8192
+# nrf52832_xxaa: CFLAGS += -D__STACK_SIZE=8192
+# nrf52832_xxaa: ASMFLAGS += -D__HEAP_SIZE=8192
+# nrf52832_xxaa: ASMFLAGS += -D__STACK_SIZE=8192
+CFLAGS += -D__HEAP_SIZE=8192
+CFLAGS += -D__STACK_SIZE=8192
+ASMFLAGS += -D__HEAP_SIZE=8192
+ASMFLAGS += -D__STACK_SIZE=8192
+
+
 
 # Add standard libraries at the very end of the linker input, after all objects
 # that may need symbols provided by these libraries.
 LIB_FILES += -lc -lnosys -lm
 
 
-.PHONY: default help
+OBJECTS = $(addprefix $(OUTPUT_DIRECTORY)/,$(notdir $(SRC_FILES:.c=.o))) #指定.o文件生成目录
+vpath %.c $(sort $(dir $(SRC_FILES))) #例如在后续的%.o:%.c规则中，make会自动去指定目录下查找
 
-# Default target - first one defined
-default: nrf52832_xxaa
+OBJECTS += $(addprefix $(OUTPUT_DIRECTORY)/,$(notdir $(S_SOURCES:%.S=%.o)))
+vpath %.S $(sort $(dir $(S_SOURCES)))
 
-# Print all targets that can be built
-help:
-	@echo following targets are available:
-	@echo		nrf52832_xxaa
-	@echo		flash_softdevice
-	@echo		sdk_config - starting external tool for editing sdk_config.h
-	@echo		flash      - flashing binary
-
-TEMPLATE_PATH := $(SDK_ROOT)/components/toolchain/gcc
+all:$(OUTPUT_DIRECTORY)/$(TARGETS).out $(OUTPUT_DIRECTORY)/$(TARGETS).hex $(OUTPUT_DIRECTORY)/$(TARGETS).bin
 
 
-include $(TEMPLATE_PATH)/Makefile.common
+$(OUTPUT_DIRECTORY)/%.o : %.c | $(OUTPUT_DIRECTORY)
+	$(CC) $(CFLAGS) -c $< -o $@
+$(OUTPUT_DIRECTORY)/%.o : %.S | $(OUTPUT_DIRECTORY)
+	$(AS)  -c $< -o $@
+$(OUTPUT_DIRECTORY)/$(TARGETS).out : $(OBJECTS)
+	$(CC)  $(LDFLAGS) $^ $(LIBDIR) $(LIB_FILES) -o $@
+	$(SZ) $@
+$(OUTPUT_DIRECTORY)/%.hex: $(OUTPUT_DIRECTORY)/%.out | $(OUTPUT_DIRECTORY)
+	$(HEX) $< $@
+# $(SZ) $@
+$(OUTPUT_DIRECTORY)/%.bin: $(OUTPUT_DIRECTORY)/%.out | $(OUTPUT_DIRECTORY)
+	$(BIN) $< $@	
 
-$(foreach target, $(TARGETS), $(call define_target, $(target)))
+-include $(wildcard $(OUTPUT_DIRECTORY)/*.d)
+
+#创建build 文件夹
+$(OUTPUT_DIRECTORY):
+	mkdir $@
+clean:
+	rm -rf $(OUTPUT_DIRECTORY)
 
 
 
-.PHONY: flash flash_softdevice erase
 
-# Flash the program
-flash: default
-	@echo Flashing: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
-	nrfjprog -f nrf52 --program $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --sectorerase
-	nrfjprog -f nrf52 --reset
 
-# Flash softdevice
-flash_softdevice:
-	@echo Flashing: s132_nrf52_7.2.0_softdevice.hex
-	nrfjprog -f nrf52 --program $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_7.2.0_softdevice.hex --sectorerase
-	nrfjprog -f nrf52 --reset
 
-erase:
-	nrfjprog -f nrf52 --eraseall
-.PHONY:clean
-	-rm -fR _build
+
+# .PHONY: default help
+
+# # Default target - first one defined
+# default: nrf52832_xxaa
+
+# # Print all targets that can be built
+# help:
+# 	@echo following targets are available:
+# 	@echo		nrf52832_xxaa
+# 	@echo		flash_softdevice
+# 	@echo		sdk_config - starting external tool for editing sdk_config.h
+# 	@echo		flash      - flashing binary
+
+# TEMPLATE_PATH := $(SDK_ROOT)/components/toolchain/gcc
+
+
+# include $(TEMPLATE_PATH)/Makefile.common
+
+# $(foreach target, $(TARGETS), $(call define_target, $(target)))
+
+
+
+# .PHONY: flash flash_softdevice erase
+
+# # Flash the program
+# flash: default
+# 	@echo Flashing: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
+# 	nrfjprog -f nrf52 --program $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --sectorerase
+# 	nrfjprog -f nrf52 --reset
+
+# # Flash softdevice
+# flash_softdevice:
+# 	@echo Flashing: s132_nrf52_7.2.0_softdevice.hex
+# 	nrfjprog -f nrf52 --program $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_7.2.0_softdevice.hex --sectorerase
+# 	nrfjprog -f nrf52 --reset
+
+# erase:
+# 	nrfjprog -f nrf52 --eraseall
+# .PHONY:clean
+# 	-rm -fR _build
 
   
-SDK_CONFIG_FILE := ../config/sdk_config.h
-CMSIS_CONFIG_TOOL := $(SDK_ROOT)/external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar
-sdk_config:
-	java -jar $(CMSIS_CONFIG_TOOL) $(SDK_CONFIG_FILE)
+# SDK_CONFIG_FILE := ../config/sdk_config.h
+# CMSIS_CONFIG_TOOL := $(SDK_ROOT)/external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar
+# sdk_config:
+# 	java -jar $(CMSIS_CONFIG_TOOL) $(SDK_CONFIG_FILE)
 
 down:
 	openocd -f stlink-v2.cfg -f nrf52.cfg -c "init" -c "reset halt" -c "flash write_image erase _build/nrf52832_xxaa.hex" -c reset -c shutdown
