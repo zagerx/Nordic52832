@@ -1,6 +1,6 @@
 PROJECT_NAME     := ble_app_hrs_pca10040_s132
 TARGETS          := nrf52832_xxaa
-OUTPUT_DIRECTORY := _build
+BUILD := _build
 
 PREFIX = arm-none-eabi-
 CC = $(PREFIX)gcc
@@ -14,7 +14,7 @@ BIN = $(CP) -O binary -S
 SDK_ROOT := ../../../../../..
 PROJ_DIR := ../../..
 
-#$(OUTPUT_DIRECTORY)/nrf52832_xxaa.out : 
+#$(BUILD)/nrf52832_xxaa.out : 
 
 
 LINKER_SCRIPT := ble_app_hrs_gcc_nrf52.ld
@@ -22,12 +22,9 @@ LINKER_SCRIPT := ble_app_hrs_gcc_nrf52.ld
 S_SOURCES = $(SDK_ROOT)/modules/nrfx/mdk/gcc_startup_nrf52.S 
 # Source files common to all targets
 SRC_FILES += \
-  $(SDK_ROOT)/components/libraries/bsp/bsp.c \
-  $(SDK_ROOT)/components/libraries/bsp/bsp_btn_ble.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw/nrf_hw_backend_init.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw/nrf_hw_backend_rng.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw/nrf_hw_backend_rng_mbedtls.c \
-  $(SDK_ROOT)/components/boards/boards.c \
   $(SDK_ROOT)/integration/nrfx/legacy/nrf_drv_clock.c \
   $(SDK_ROOT)/integration/nrfx/legacy/nrf_drv_rng.c \
   $(SDK_ROOT)/integration/nrfx/legacy/nrf_drv_uart.c \
@@ -116,12 +113,6 @@ SRC_FILES += \
   $(SDK_ROOT)/components/ble/peer_manager/security_dispatcher.c \
   $(SDK_ROOT)/components/ble/peer_manager/security_manager.c \
   $(SDK_ROOT)/external/utf_converter/utf.c \
-  $(SDK_ROOT)/components/ble/ble_services/ble_bas/ble_bas.c \
-  $(SDK_ROOT)/components/ble/ble_services/ble_dis/ble_dis.c \
-  $(SDK_ROOT)/components/ble/ble_services/ble_hrs/ble_hrs.c \
-  $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT.c \
-  $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT_Syscalls_GCC.c \
-  $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT_printf.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/oberon/oberon_backend_chacha_poly_aead.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/oberon/oberon_backend_ecc.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/oberon/oberon_backend_ecdh.c \
@@ -361,35 +352,34 @@ ASMFLAGS += -D__STACK_SIZE=8192
 LIB_FILES += -lc -lnosys -lm
 
 
-OBJECTS = $(addprefix $(OUTPUT_DIRECTORY)/,$(notdir $(SRC_FILES:.c=.o))) #指定.o文件生成目录
+OBJECTS = $(addprefix $(BUILD)/,$(notdir $(SRC_FILES:.c=.o))) #指定.o文件生成目录
 vpath %.c $(sort $(dir $(SRC_FILES))) #例如在后续的%.o:%.c规则中，make会自动去指定目录下查找
 
-OBJECTS += $(addprefix $(OUTPUT_DIRECTORY)/,$(notdir $(S_SOURCES:%.S=%.o)))
+OBJECTS += $(addprefix $(BUILD)/,$(notdir $(S_SOURCES:%.S=%.o)))
 vpath %.S $(sort $(dir $(S_SOURCES)))
 
-all:$(OUTPUT_DIRECTORY)/$(TARGETS).out $(OUTPUT_DIRECTORY)/$(TARGETS).hex $(OUTPUT_DIRECTORY)/$(TARGETS).bin
+all:$(BUILD)/$(TARGETS).out $(BUILD)/$(TARGETS).hex $(BUILD)/$(TARGETS).bin
 
-
-$(OUTPUT_DIRECTORY)/%.o : %.c | $(OUTPUT_DIRECTORY)
-	$(CC) $(CFLAGS) -c $< -o $@
-$(OUTPUT_DIRECTORY)/%.o : %.S | $(OUTPUT_DIRECTORY)
-	$(AS)  -c $< -o $@
-$(OUTPUT_DIRECTORY)/$(TARGETS).out : $(OBJECTS)
+$(BUILD)/%.o : %.c | $(BUILD)
+	@$(CC) $(CFLAGS) -c $< -o $@
+$(BUILD)/%.o : %.S | $(BUILD)
+	@$(AS)  -c $< -o $@
+#  @echo $(notdir $(<:.s=.o))
+$(BUILD)/$(TARGETS).out : $(OBJECTS)
 	$(CC)  $(LDFLAGS) $^ $(LIBDIR) $(LIB_FILES) -o $@
 	$(SZ) $@
-$(OUTPUT_DIRECTORY)/%.hex: $(OUTPUT_DIRECTORY)/%.out | $(OUTPUT_DIRECTORY)
+$(BUILD)/%.hex: $(BUILD)/%.out | $(BUILD)
 	$(HEX) $< $@
-# $(SZ) $@
-$(OUTPUT_DIRECTORY)/%.bin: $(OUTPUT_DIRECTORY)/%.out | $(OUTPUT_DIRECTORY)
-	$(BIN) $< $@	
+$(BUILD)/%.bin: $(BUILD)/%.out | $(BUILD)
+	$(BIN) $< $@
 
--include $(wildcard $(OUTPUT_DIRECTORY)/*.d)
+-include $(wildcard $(BUILD)/*.d)
 
 #创建build 文件夹
-$(OUTPUT_DIRECTORY):
+$(BUILD):
 	mkdir $@
 clean:
-	rm -rf $(OUTPUT_DIRECTORY)
+	rm -rf $(BUILD)
 
 
 
@@ -423,8 +413,8 @@ clean:
 
 # # Flash the program
 # flash: default
-# 	@echo Flashing: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
-# 	nrfjprog -f nrf52 --program $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex --sectorerase
+# 	@echo Flashing: $(BUILD)/nrf52832_xxaa.hex
+# 	nrfjprog -f nrf52 --program $(BUILD)/nrf52832_xxaa.hex --sectorerase
 # 	nrfjprog -f nrf52 --reset
 
 # # Flash softdevice
